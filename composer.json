@@ -1,0 +1,27 @@
+{
+  "name": "yceruto/ddd-maker-bundle",
+  "type": "symfony-bundle",
+  "description": "Domain-Driven Design Maker for Symfony applications",
+  "keywords": [],
+  "homepage": "https://github.com/yceruto/ddd-maker-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Yonel Ceruto",
+      "email": "yonelceruto@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "ext-json": "*",
+    "symfony/console": "^5.4|^6.0",
+    "symfony/framework-bundle": "^5.4|^6.0",
+    "symfony/maker-bundle": "^1.36"
+  },
+  "autoload": {
+    "psr-4": {
+      "Yceruto\\DddMakerBundle\\": "src/"
+    }
+  },
+  "minimum-stability": "dev"
+}
