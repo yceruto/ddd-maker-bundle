@@ -34,18 +34,18 @@ final class MakeAppContext extends AbstractMaker
 
     public static function getCommandName(): string
     {
-        return 'make:app-context';
+        return 'make:ddd:context';
     }
 
     public static function getCommandDescription(): string
     {
-        return 'Creates a new App context';
+        return 'Creates a new Kernel context (Application)';
     }
 
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('context', InputArgument::OPTIONAL, 'The new app context (e.g. <fg=yellow>BoundedContext</>)')
+            ->addArgument('context', InputArgument::OPTIONAL, 'The new Kernel context (e.g. <fg=yellow>BoundedContextName</>)')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeAppContext.txt'))
         ;
     }
@@ -55,33 +55,33 @@ final class MakeAppContext extends AbstractMaker
         $context = ucfirst($input->getArgument('context'));
         $contextLower = strtolower($context);
         $skeletonDir = dirname(__DIR__, 2).'/config/skeleton';
-        $io->title('Creating new App context');
+        $io->title('Creating new Kernel context (Application)');
 
         $generator->generateFile(
-            $this->projectDir.'/config/'.$contextLower.'/bundles.php',
-            $skeletonDir.'/config/bundles.tpl.php'
+            $this->projectDir.'/context/'.$contextLower.'/config/bundles.php',
+            $skeletonDir.'/context/config/bundles.tpl.php'
         );
 
         $generator->generateFile(
-            $this->projectDir.'/config/'.$contextLower.'/routes.yaml',
-            $skeletonDir.'/config/routes.tpl.php',
+            $this->projectDir.'/context/'.$contextLower.'/config/routes.yaml',
+            $skeletonDir.'/context/config/routes.tpl.php',
             ['context' => $context]
         );
 
         $generator->generateFile(
-            $this->projectDir.'/config/'.$contextLower.'/services.yaml',
-            $skeletonDir.'/config/services.tpl.php',
+            $this->projectDir.'/context/'.$contextLower.'/config/services.yaml',
+            $skeletonDir.'/context/config/services.tpl.php',
             ['context' => $context]
         );
 
         $generator->generateFile(
-            $this->projectDir.'/src/'.$context.'/Controller/.gitignore',
+            $this->projectDir.'/context/'.$contextLower.'/src/Controller/.gitignore',
             $skeletonDir.'/.gitignore'
         );
 
         $generator->generateFile(
-            $this->projectDir.'/tests/'.$context.'/'.$context.'WebTestCase.php',
-            $skeletonDir.'/tests/WebTestCase.tpl.php',
+            $this->projectDir.'/tests/context/'.$contextLower.'/'.$context.'WebTestCase.php',
+            $skeletonDir.'/context/tests/WebTestCase.tpl.php',
             ['context' => $context, 'contextLower' => $contextLower]
         );
 
@@ -89,8 +89,8 @@ final class MakeAppContext extends AbstractMaker
 
         if (is_file($this->projectDir.'/composer.json') && is_readable($this->projectDir.'/composer.json')) {
             $composerJson = json_decode(file_get_contents($this->projectDir.'/composer.json'), true);
-            $composerJson['autoload']['psr-4'][$context.'\\'] = 'src/'.$context.'/';
-            $composerJson['autoload-dev']['psr-4'][$context.'\\Tests\\'] = 'tests/'.$context.'/';
+            $composerJson['autoload']['psr-4'][$context.'\\'] = 'context/'.$contextLower.'/src/';
+            $composerJson['autoload-dev']['psr-4'][$context.'\\Tests\\'] = 'tests/context/'.$contextLower.'/';
             file_put_contents($this->projectDir.'/composer.json', json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
         }
         $io->comment('<fg=yellow>updated</>: composer.json (<comment>composer dump-autoload</> required)');

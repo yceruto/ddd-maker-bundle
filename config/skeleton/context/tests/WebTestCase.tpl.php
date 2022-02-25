@@ -12,7 +12,7 @@ abstract class <?= $context; ?>WebTestCase extends WebTestCase
         return new \Kernel(
             $options['environment'] ?? 'test',
             $options['debug'] ?? true,
-            '<?= $contextLower; ?>'
+            $options['context'] ?? '<?= $contextLower; ?>'
         );
     }
 }

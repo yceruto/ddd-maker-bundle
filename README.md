@@ -8,7 +8,7 @@ This bundle assumes you are using https://github.com/yceruto/symfony-ddd-skeleto
 
 ## Maker
 
- * `bin/console make:app-context admin` Creates a new App context skeleton.
+ * `bin/console make:ddd:context admin` Creates a new Kernel context skeleton.
 
 ## License
 
