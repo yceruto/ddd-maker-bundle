@@ -6,4 +6,6 @@ services:
         autoconfigure: true
 
     <?= $context ?>\:
-        resource: '../src/<?= $context ?>/'
+        resource: '../src/'
+        exclude:
+            - '../src/Entity/'
