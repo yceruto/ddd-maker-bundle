@@ -10,5 +10,5 @@ interface <?= $class_name."\n"; ?>
 
     public function remove(<?= $entity_type; ?> $<?= $entity_name; ?>): void;
 
-    public function ofId(<?= $entity_id_type; ?> $id): ?<?= $entity_type; ?>;
+    public function ofId(<?= $entity_type; ?>Id $id): ?<?= $entity_type; ?>;
 }

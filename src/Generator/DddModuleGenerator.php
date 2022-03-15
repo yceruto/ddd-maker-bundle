@@ -55,24 +55,25 @@ class DddModuleGenerator
         $path = new Path($relativePath, $this->rootNamespace);
         $normalizedPath = $path->normalizedValue();
 
+        // Application
         $this->generator->generateFile(
             $this->projectDir.'/src/'.$normalizedPath.'/Application/.gitignore',
             $this->skeletonDir.'/.gitignore'
         );
 
-        $this->generateEntity($path);
-        $this->generateEntityId($path);
-        $this->generateEntityRepository($path);
+        // Domain
+        $this->generateDomainEntity($path);
+        $this->generateDomainEntityId($path);
+        $this->generateDomainEntityNotFound($path);
+        $this->generateDomainEntityRepository($path);
 
-        $this->generator->generateFile(
-            $this->projectDir.'/src/'.$normalizedPath.'/Infrastructure/.gitignore',
-            $this->skeletonDir.'/.gitignore'
-        );
+        // Infrastructure
+        $this->generateInfraEntityRepository($path);
 
         $this->generator->writeChanges();
     }
 
-    private function generateEntity(Path $path): void
+    private function generateDomainEntity(Path $path): void
     {
         $className = $path->toShortClassName();
         $this->generator->generateFile(
@@ -86,7 +87,7 @@ class DddModuleGenerator
         );
     }
 
-    private function generateEntityId(Path $path): void
+    private function generateDomainEntityId(Path $path): void
     {
         $className = $path->toShortClassName().'Id';
         $this->generator->generateFile(
@@ -100,10 +101,10 @@ class DddModuleGenerator
         );
     }
 
-    private function generateEntityRepository(Path $path): void
+    private function generateDomainEntityRepository(Path $path): void
     {
-        $entityClassName = $path->toShortClassName();
-        $className = $entityClassName.'Repository';
+        $entityShortName = $path->toShortClassName();
+        $className = $entityShortName.'Repository';
         $this->generator->generateFile(
             $this->projectDir.'/src/'.$path->normalizedValue().'/Domain/Model/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Domain/Model/EntityRepository.tpl.php',
@@ -111,9 +112,43 @@ class DddModuleGenerator
                 'root_namespace' => $this->rootNamespace,
                 'namespace' => $path->toNamespace('\\Domain\\Model'),
                 'class_name' => $className,
-                'entity_type' => $entityClassName,
-                'entity_id_type' => $entityClassName.'Id',
-                'entity_name' => strtolower($entityClassName),
+                'entity_type' => $entityShortName,
+                'entity_name' => strtolower($entityShortName),
+            ]
+        );
+    }
+
+    private function generateDomainEntityNotFound(Path $path): void
+    {
+        $entityShortName = $path->toShortClassName();
+        $className = $entityShortName.'NotFound';
+        $this->generator->generateFile(
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Domain/Model/'.$className.'.php',
+            $this->skeletonDir.'/src/Module/Domain/Model/EntityNotFound.tpl.php',
+            [
+                'root_namespace' => $this->rootNamespace,
+                'namespace' => $path->toNamespace('\\Domain\\Model'),
+                'class_name' => $className,
+                'entity_type' => $entityShortName,
+                'entity_name' => strtolower($entityShortName),
+            ]
+        );
+    }
+
+    private function generateInfraEntityRepository(Path $path): void
+    {
+        $entityShortName = $path->toShortClassName();
+        $className = 'InMemory'.$entityShortName.'Repository';
+        $this->generator->generateFile(
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Infrastructure/Persistence/InMemory/'.$className.'.php',
+            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/InMemory/InMemoryEntityRepository.tpl.php',
+            [
+                'root_namespace' => $this->rootNamespace,
+                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\InMemory'),
+                'class_name' => $className,
+                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
+                'entity_type' => $entityShortName,
+                'entity_name' => strtolower($entityShortName),
             ]
         );
     }

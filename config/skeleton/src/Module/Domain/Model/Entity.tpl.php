@@ -9,4 +9,9 @@ use <?= $root_namespace; ?>\Shared\Domain\Aggregate\AggregateRoot;
 class <?= $class_name; ?> extends AggregateRoot
 {
     protected <?= $class_name; ?>Id $id;
+
+    public function id(): <?= $class_name; ?>Id
+    {
+        return $this->id;
+    }
 }
