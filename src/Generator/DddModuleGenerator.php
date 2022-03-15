@@ -138,6 +138,21 @@ class DddModuleGenerator
     private function generateInfraEntityRepository(Path $path): void
     {
         $entityShortName = $path->toShortClassName();
+
+        $className = 'Doctrine'.$entityShortName.'Repository';
+        $this->generator->generateFile(
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Infrastructure/Persistence/Doctrine/'.$className.'.php',
+            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/Doctrine/DoctrineEntityRepository.tpl.php',
+            [
+                'root_namespace' => $this->rootNamespace,
+                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\Doctrine'),
+                'class_name' => $className,
+                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
+                'entity_type' => $entityShortName,
+                'entity_name' => strtolower($entityShortName),
+            ]
+        );
+
         $className = 'InMemory'.$entityShortName.'Repository';
         $this->generator->generateFile(
             $this->projectDir.'/src/'.$path->normalizedValue().'/Infrastructure/Persistence/InMemory/'.$className.'.php',
