@@ -64,10 +64,12 @@ class DddModuleGenerator
         // Domain
         $this->generateDomainEntity($path);
         $this->generateDomainEntityId($path);
+        $this->generateDomainEntityEvent($path);
         $this->generateDomainEntityNotFound($path);
         $this->generateDomainEntityRepository($path);
 
         // Infrastructure
+        $this->generateInfraDoctrineDbalEntityIdType($path);
         $this->generateInfraEntityRepository($path);
 
         $this->generator->writeChanges();
@@ -83,6 +85,8 @@ class DddModuleGenerator
                 'root_namespace' => $this->rootNamespace,
                 'namespace' => $path->toNamespace('\\Domain\\Model'),
                 'class_name' => $className,
+                'entity_type' => $className,
+                'entity_name' => strtolower($className),
             ]
         );
     }
@@ -97,6 +101,23 @@ class DddModuleGenerator
                 'root_namespace' => $this->rootNamespace,
                 'namespace' => $path->toNamespace('\\Domain\\Model'),
                 'class_name' => $className,
+            ]
+        );
+    }
+
+    private function generateDomainEntityEvent(Path $path): void
+    {
+        $entityShortName = $path->toShortClassName();
+        $className = $entityShortName.'WasCreated';
+        $this->generator->generateFile(
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Domain/Model/'.$className.'.php',
+            $this->skeletonDir.'/src/Module/Domain/Model/EntityWasCreated.tpl.php',
+            [
+                'root_namespace' => $this->rootNamespace,
+                'namespace' => $path->toNamespace('\\Domain\\Model'),
+                'class_name' => $className,
+                'entity_type' => $entityShortName,
+                'entity_name' => strtolower($entityShortName),
             ]
         );
     }
@@ -129,6 +150,24 @@ class DddModuleGenerator
                 'root_namespace' => $this->rootNamespace,
                 'namespace' => $path->toNamespace('\\Domain\\Model'),
                 'class_name' => $className,
+                'entity_type' => $entityShortName,
+                'entity_name' => strtolower($entityShortName),
+            ]
+        );
+    }
+
+    private function generateInfraDoctrineDbalEntityIdType(Path $path): void
+    {
+        $entityShortName = $path->toShortClassName();
+        $className = $entityShortName.'IdType';
+        $this->generator->generateFile(
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Infrastructure/Persistence/Doctrine/Dbal/Type/'.$className.'.php',
+            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/Doctrine/Dbal/Type/EntityIdType.tpl.php',
+            [
+                'root_namespace' => $this->rootNamespace,
+                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\Doctrine\\Dbal\\Type'),
+                'class_name' => $className,
+                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
                 'entity_type' => $entityShortName,
                 'entity_name' => strtolower($entityShortName),
             ]
