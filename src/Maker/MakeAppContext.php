@@ -22,10 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 
 final class MakeAppContext extends AbstractMaker
 {
-    /**
-     * @var string
-     */
-    private $projectDir;
+    private string $projectDir;
 
     public function __construct(string $projectDir)
     {
