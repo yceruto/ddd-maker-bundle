@@ -38,11 +38,6 @@ final class Path
         return $this->rootNamespace.'\\'.str_replace('/', '\\', $this->relativePath).$suffixNamespace;
     }
 
-    public function toNamespaceOffset(string $suffixNamespace = ''): string
-    {
-        return $this->rootNamespace.'\\'.str_replace('/', '\\', $this->relativePath).'\\'.$this->offsetPath.$suffixNamespace;
-    }
-
     public function toShortClassName(): string
     {
         if (false === $position = strrpos($this->relativePath, '/')) {

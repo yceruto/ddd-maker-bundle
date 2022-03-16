@@ -64,6 +64,7 @@ class DddModuleGenerator
         // Domain
         $this->generateDomainEntity($path);
         $this->generateDomainEntityId($path);
+        $this->generateDomainEntityDto($path);
         $this->generateDomainEntityEvent($path);
         $this->generateDomainEntityNotFound($path);
         $this->generateDomainEntityRepository($path);
@@ -101,6 +102,23 @@ class DddModuleGenerator
                 'root_namespace' => $this->rootNamespace,
                 'namespace' => $path->toNamespace('\\Domain\\Model'),
                 'class_name' => $className,
+            ]
+        );
+    }
+
+    private function generateDomainEntityDto(Path $path): void
+    {
+        $entityShortName = $path->toShortClassName();
+        $className = $entityShortName.'Dto';
+        $this->generator->generateFile(
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Domain/Model/'.$className.'.php',
+            $this->skeletonDir.'/src/Module/Domain/Model/EntityDto.tpl.php',
+            [
+                'root_namespace' => $this->rootNamespace,
+                'namespace' => $path->toNamespace('\\Domain\\Model'),
+                'class_name' => $className,
+                'entity_type' => $entityShortName,
+                'entity_name' => strtolower($entityShortName),
             ]
         );
     }

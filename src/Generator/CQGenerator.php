@@ -173,6 +173,7 @@ class CQGenerator
 
     private function generateApplicationQueryResponse(Path $path): void
     {
+        $aggregateShortName = $path->toShortClassName();
         $queryShortName = $path->toShortClassNameOffset();
         $className = $queryShortName.'Response';
 
@@ -183,8 +184,9 @@ class CQGenerator
                 'root_namespace' => $this->rootNamespace,
                 'namespace' => $path->toNamespace('\\Application\\'.$queryShortName),
                 'class_name' => $className,
-                'query_type' => $queryShortName,
-                'query_name' => strtolower($queryShortName),
+                'aggregate_namespace' => $path->toNamespace('\\Domain\\Model'),
+                'aggregate_type' => $aggregateShortName,
+                'aggregate_name' => strtolower($aggregateShortName),
             ]
         );
     }
