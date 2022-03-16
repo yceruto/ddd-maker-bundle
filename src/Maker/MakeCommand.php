@@ -44,7 +44,7 @@ final class MakeCommand extends AbstractMaker
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('path', InputArgument::OPTIONAL, 'The relative path of the new Command (e.g. <fg=yellow>catalog/listing/publish</>)')
+            ->addArgument('path', InputArgument::REQUIRED, 'The relative path of the new Command (e.g. <fg=yellow>catalog/listing/publish</>)')
             ->addOption('factory', null, InputOption::VALUE_NONE, 'Generate with factory')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeCommand.txt'))
         ;

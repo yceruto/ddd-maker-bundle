@@ -19,49 +19,43 @@ use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Yceruto\DddMakerBundle\Generator\DddModuleGenerator;
+use Yceruto\DddMakerBundle\Generator\DddEventGenerator;
 
-final class MakeModule extends AbstractMaker
+final class MakeEventSubscriber extends AbstractMaker
 {
-    private DddModuleGenerator $moduleGenerator;
+    private DddEventGenerator $eventGenerator;
 
-    public function __construct(DddModuleGenerator $moduleGenerator)
+    public function __construct(DddEventGenerator $eventGenerator)
     {
-        $this->moduleGenerator = $moduleGenerator;
+        $this->eventGenerator = $eventGenerator;
     }
 
     public static function getCommandName(): string
     {
-        return 'make:ddd:module';
+        return 'make:ddd:event-subscriber';
     }
 
     public static function getCommandDescription(): string
     {
-        return 'Creates a new Module';
+        return 'Creates a new Domain Event Subscriber';
     }
 
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('path', InputArgument::REQUIRED, 'The relative path of the new Module (e.g. <fg=yellow>catalog/listing</>)')
-            ->addOption('basic', null, InputOption::VALUE_NONE, 'Generate only the basic module structure')
-            //->setHelp(file_get_contents(__DIR__.'/../help/MakeModule.txt'))
+            ->addArgument('path', InputArgument::REQUIRED, 'The relative path of the new Domain Event Subscriber (e.g. <fg=yellow>catalog/listing/send-listing-published-email</>)')
+            ->addArgument('event', InputArgument::REQUIRED, 'The event name (e.g. <fg=yellow>published</>)')
+            //->setHelp(file_get_contents(__DIR__.'/../help/MakeCommand.txt'))
         ;
     }
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
-        $io->title('Creating new Module');
+        $io->title('Creating new Domain Event Subscriber');
         $path = $input->getArgument('path');
+        $eventName = $input->getArgument('event');
 
-        if ($input->getOption('basic')) {
-            $this->moduleGenerator->generateBasic($path);
-
-            return;
-        }
-
-        $this->moduleGenerator->generateFull($path);
+        $this->eventGenerator->generateEventSubscriber($path, $eventName);
 
         $this->writeSuccessMessage($io);
     }

@@ -42,7 +42,7 @@ final class MakeAppContext extends AbstractMaker
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('context', InputArgument::OPTIONAL, 'The new Kernel context (e.g. <fg=yellow>BoundedContextName</>)')
+            ->addArgument('context', InputArgument::REQUIRED, 'The new Kernel context (e.g. <fg=yellow>BoundedContextName</>)')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeAppContext.txt'))
         ;
     }
