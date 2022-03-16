@@ -46,6 +46,7 @@ final class MakeModule extends AbstractMaker
         $command
             ->addArgument('path', InputArgument::REQUIRED, 'The relative path of the new Module (e.g. <fg=yellow>catalog/listing</>)')
             ->addOption('basic', null, InputOption::VALUE_NONE, 'Generate only the basic module structure')
+            ->addOption('spec', null, InputOption::VALUE_NONE, 'Generate with Specification')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeModule.txt'))
         ;
     }
@@ -61,7 +62,7 @@ final class MakeModule extends AbstractMaker
             return;
         }
 
-        $this->moduleGenerator->generateFull($path);
+        $this->moduleGenerator->generateFull($path, $input->getOption('spec'));
 
         $this->writeSuccessMessage($io);
     }
