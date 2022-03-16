@@ -18,7 +18,7 @@ final class Path
 
     public function __construct(string $relativePath, string $rootNamespace = 'App')
     {
-        $this->relativePath = ucwords(strtolower(trim($relativePath, '/')), '/');
+        $this->relativePath = str_replace('-', '', ucwords(trim($relativePath, '/'), '/-'));
         $this->rootNamespace = $rootNamespace;
     }
 
