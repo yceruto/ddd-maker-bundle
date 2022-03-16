@@ -45,19 +45,20 @@ final class Path
 
     public function toShortClassName(): string
     {
-        if ('' !== $this->offsetPath) {
-            if (false === $position = strrpos($this->offsetPath, '/')) {
-                return $this->offsetPath;
-            }
-
-            return substr($this->offsetPath, $position + 1);
-        }
-
         if (false === $position = strrpos($this->relativePath, '/')) {
             return $this->relativePath;
         }
 
         return substr($this->relativePath, $position + 1);
+    }
+
+    public function toShortClassNameOffset(): string
+    {
+        if (false === $position = strrpos($this->offsetPath, '/')) {
+            return $this->offsetPath;
+        }
+
+        return substr($this->offsetPath, $position + 1);
     }
 
     private function extractPaths(string $relativePath, int $offset): array

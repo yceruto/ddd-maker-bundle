@@ -22,7 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Yceruto\DddMakerBundle\Generator\CQGenerator;
 
-final class MakeCommand extends AbstractMaker
+final class MakeQuery extends AbstractMaker
 {
     private CQGenerator $commandGenerator;
 
@@ -33,30 +33,28 @@ final class MakeCommand extends AbstractMaker
 
     public static function getCommandName(): string
     {
-        return 'make:cqs:command';
+        return 'make:cqs:query';
     }
 
     public static function getCommandDescription(): string
     {
-        return 'Creates a new Command';
+        return 'Creates a new Query';
     }
 
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('path', InputArgument::OPTIONAL, 'The relative path of the new Command (e.g. <fg=yellow>catalog/listing/publish</>)')
-            ->addOption('factory', null, InputOption::VALUE_NONE, 'Generate with factory')
+            ->addArgument('path', InputArgument::OPTIONAL, 'The relative path of the new Query (e.g. <fg=yellow>catalog/listing/find</>)')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeCommand.txt'))
         ;
     }
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
-        $io->title('Creating new Command');
+        $io->title('Creating new Query');
         $path = $input->getArgument('path');
-        $factory = $input->getOption('factory');
 
-        $this->commandGenerator->generateCommand($path, $factory);
+        $this->commandGenerator->generateQuery($path);
 
         $this->writeSuccessMessage($io);
     }
