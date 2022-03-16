@@ -1,5 +1,6 @@
 <?php
 
+use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 
@@ -9,8 +10,11 @@ return static function (ContainerConfigurator $configurator) {
             ->autowire()
             ->autoconfigure()
             ->bind('string $projectDir', param('kernel.project_dir'))
-    ;
+            ->bind('string $skeletonDir', param('ddd_maker.skeleton_dir'))
+            ->bind('string $rootNamespace', param('ddd_maker.root_namespace'))
 
-    $services->load('Yceruto\\DddMakerBundle\\', '../src/*')
-        ->exclude('../src/{DependencyInjection}');
+        ->load('Yceruto\\DddMakerBundle\\', '../src/*')
+
+        ->alias(Generator::class, 'maker.generator')
+    ;
 };
