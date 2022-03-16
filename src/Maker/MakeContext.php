@@ -20,7 +20,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 
-final class MakeAppContext extends AbstractMaker
+final class MakeContext extends AbstractMaker
 {
     private string $projectDir;
 
@@ -42,7 +42,7 @@ final class MakeAppContext extends AbstractMaker
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('context', InputArgument::REQUIRED, 'The new Kernel context (e.g. <fg=yellow>BoundedContextName</>)')
+            ->addArgument('context', InputArgument::REQUIRED, 'The new Kernel context (e.g. <fg=yellow>Admin</>)')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeAppContext.txt'))
         ;
     }
