@@ -19,41 +19,41 @@ use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Yceruto\DddMakerBundle\Generator\CQGenerator;
+use Yceruto\DddMakerBundle\Generator\DddEventGenerator;
 
-final class MakeQuery extends AbstractMaker
+final class MakeEvent extends AbstractMaker
 {
-    private CQGenerator $commandGenerator;
+    private DddEventGenerator $eventGenerator;
 
-    public function __construct(CQGenerator $commandGenerator)
+    public function __construct(DddEventGenerator $eventGenerator)
     {
-        $this->commandGenerator = $commandGenerator;
+        $this->eventGenerator = $eventGenerator;
     }
 
     public static function getCommandName(): string
     {
-        return 'make:cqs:query';
+        return 'make:ddd:event';
     }
 
     public static function getCommandDescription(): string
     {
-        return 'Creates a new Query';
+        return 'Creates a new Domain Event';
     }
 
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('path', InputArgument::OPTIONAL, 'The relative path of the new Query (e.g. <fg=yellow>catalog/listing/find</>)')
+            ->addArgument('path', InputArgument::OPTIONAL, 'The relative path of the new Domain Event (e.g. <fg=yellow>catalog/listing/published</>)')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeCommand.txt'))
         ;
     }
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
-        $io->title('Creating new Query');
+        $io->title('Creating new Domain Event');
         $path = $input->getArgument('path');
 
-        $this->commandGenerator->generateQuery($path);
+        $this->eventGenerator->generateEvent($path);
 
         $this->writeSuccessMessage($io);
     }

@@ -129,7 +129,7 @@ class DddModuleGenerator
         $className = $entityShortName.'WasCreated';
         $this->generator->generateFile(
             $this->projectDir.'/src/'.$path->normalizedValue().'/Domain/Model/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Domain/Model/EntityWasCreated.tpl.php',
+            $this->skeletonDir.'/src/Module/Domain/Model/Event.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
                 'namespace' => $path->toNamespace('\\Domain\\Model'),
