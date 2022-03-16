@@ -1,9 +1,8 @@
 <?php
 
+use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Yceruto\DddMakerBundle\Generator\DddModuleGenerator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $configurator) {
     $services = $configurator->services()
@@ -16,7 +15,6 @@ return static function (ContainerConfigurator $configurator) {
 
         ->load('Yceruto\\DddMakerBundle\\', '../src/*')
 
-        ->set(DddModuleGenerator::class)
-            ->bind('Symfony\Bundle\MakerBundle\Generator $generator', service('maker.generator'))
+        ->alias(Generator::class, 'maker.generator')
     ;
 };
