@@ -29,9 +29,9 @@ class DddModuleGenerator
         $this->rootNamespace = $rootNamespace;
     }
 
-    public function generateBasic(string $relativePath): void
+    public function generateBasic(string $namespacePath): void
     {
-        $path = new Path($relativePath, $this->rootNamespace);
+        $path = new Path($namespacePath, $this->rootNamespace);
         $normalizedPath = $path->normalizedValue();
 
         $this->generator->generateFile(
@@ -50,9 +50,9 @@ class DddModuleGenerator
         $this->generator->writeChanges();
     }
 
-    public function generateFull(string $relativePath, bool $withSpec): void
+    public function generateFull(string $namespacePath, bool $withSpec): void
     {
-        $path = new Path($relativePath, $this->rootNamespace);
+        $path = new Path($namespacePath, $this->rootNamespace);
         $normalizedPath = $path->normalizedValue();
 
         // Application

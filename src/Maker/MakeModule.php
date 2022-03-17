@@ -44,7 +44,7 @@ final class MakeModule extends AbstractMaker
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('path', InputArgument::REQUIRED, 'The relative path of the new Module (e.g. <fg=yellow>catalog/listing</>)')
+            ->addArgument('path', InputArgument::REQUIRED, 'The namespace path of the new Module (e.g. <fg=yellow>catalog/listing</>)')
             ->addOption('basic', null, InputOption::VALUE_NONE, 'Generate only the basic module structure')
             ->addOption('spec', null, InputOption::VALUE_NONE, 'Generate with Specification')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeModule.txt'))

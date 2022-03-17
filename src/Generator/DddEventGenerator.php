@@ -29,28 +29,36 @@ class DddEventGenerator
         $this->rootNamespace = $rootNamespace;
     }
 
-    public function generateEvent(string $relativePath): void
+    public function generateEvent(string $namespacePath, string $name): void
     {
-        $path = new Path($relativePath, $this->rootNamespace, -1);
+        $path = new Path($namespacePath, $this->rootNamespace);
+        $name = Path::normalize($name);
 
-        $this->generateDomainEvent($path);
+        $this->generateDomainEvent($path, $name);
 
         $this->generator->writeChanges();
     }
 
-    public function generateEventSubscriber(string $relativePath, string $eventName): void
+    public function generateEventSubscriber(string $namespacePath, string $name, string $event, string $eventRelativePath = null): void
     {
-        $path = new Path($relativePath, $this->rootNamespace, -1);
+        $path = new Path($namespacePath, $this->rootNamespace);
+        $event = Path::normalize($event);
+        $name = Path::normalize($name);
+        $eventPath = null;
 
-        $this->generateDomainEventSubscriber($path, $eventName);
+        if (null !== $eventRelativePath) {
+            $eventPath = new Path($eventRelativePath, $this->rootNamespace);
+        }
+
+        $this->generateDomainEventSubscriber($path, $name, $event, $eventPath);
 
         $this->generator->writeChanges();
     }
 
-    private function generateDomainEvent(Path $path): void
+    private function generateDomainEvent(Path $path, string $name): void
     {
         $classShortName = $path->toShortClassName();
-        $className = $classShortName.'Was'.$path->toShortClassNameOffset();
+        $className = $classShortName.'Was'.$name;
 
         $this->generator->generateFile(
             $this->projectDir.'/src/'.$path->normalizedValue().'/Domain/Model/'.$className.'.php',
@@ -63,27 +71,24 @@ class DddEventGenerator
         );
     }
 
-    private function generateDomainEventSubscriber(Path $path, string $eventName): void
+    private function generateDomainEventSubscriber(Path $path, string $name, string $event, Path $eventPath = null): void
     {
-        $eventPath = new Path($eventName, $this->rootNamespace, -1);
-        if ('' === $eventName = $eventPath->toShortClassNameOffset()) {
-            $eventName = $eventPath->toShortClassName();
-            $aggregateShortName = $path->toShortClassName();
-            $eventNamespace = $path->toNamespace('\\Domain\\Model');
-        } else {
-            $aggregateShortName = $eventPath->toShortClassName();
+        if (null !== $eventPath) {
+            $entityShortName = $eventPath->toShortClassName();
             $eventNamespace = $eventPath->toNamespace('\\Domain\\Model');
+        } else {
+            $entityShortName = $path->toShortClassName();
+            $eventNamespace = $path->toNamespace('\\Domain\\Model');
         }
-        $eventType = $aggregateShortName.'Was'.$eventName;
-        $className = $path->toShortClassNameOffset();
+        $eventType = $entityShortName.'Was'.$event;
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/EventSubscriber/'.$className.'.php',
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/EventSubscriber/'.$name.'.php',
             $this->skeletonDir.'/src/Module/Application/EventSubscriber/DomainEventSubscriber.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
                 'namespace' => $path->toNamespace('\\Application\\EventSubscriber'),
-                'class_name' => $className,
+                'class_name' => $name,
                 'event_namespace' => $eventNamespace,
                 'event_type' => $eventType,
             ]

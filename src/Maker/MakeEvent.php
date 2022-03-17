@@ -43,7 +43,8 @@ final class MakeEvent extends AbstractMaker
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('path', InputArgument::REQUIRED, 'The relative path of the new Domain Event (e.g. <fg=yellow>catalog/listing/published</>)')
+            ->addArgument('path', InputArgument::REQUIRED, 'The namespace path of the new Domain Event (e.g. <fg=yellow>catalog/listing</>)')
+            ->addArgument('name', InputArgument::REQUIRED, 'The Domain Event name (e.g. <fg=yellow>published</>)')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeCommand.txt'))
         ;
     }
@@ -52,8 +53,9 @@ final class MakeEvent extends AbstractMaker
     {
         $io->title('Creating new Domain Event');
         $path = $input->getArgument('path');
+        $name = $input->getArgument('name');
 
-        $this->eventGenerator->generateEvent($path);
+        $this->eventGenerator->generateEvent($path, $name);
 
         $this->writeSuccessMessage($io);
     }

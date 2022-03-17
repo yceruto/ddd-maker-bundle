@@ -43,8 +43,9 @@ final class MakeEventSubscriber extends AbstractMaker
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('path', InputArgument::REQUIRED, 'The relative path of the new Domain Event Subscriber (e.g. <fg=yellow>catalog/listing/send-listing-published-email</>)')
-            ->addArgument('event', InputArgument::REQUIRED, 'The event name (e.g. <fg=yellow>published</>)')
+            ->addArgument('path', InputArgument::REQUIRED, 'The namespace path of the new Domain Event Subscriber (e.g. <fg=yellow>catalog/listing</>)')
+            ->addArgument('name', InputArgument::REQUIRED, 'The Subscriber name (e.g. <fg=yellow>send-listing-published-email</>)')
+            ->addArgument('event', InputArgument::REQUIRED, 'The Domain Event path/name (e.g. <fg=yellow>published</> or <fg=yellow>catalog/listing/published</>)')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeCommand.txt'))
         ;
     }
@@ -53,9 +54,16 @@ final class MakeEventSubscriber extends AbstractMaker
     {
         $io->title('Creating new Domain Event Subscriber');
         $path = $input->getArgument('path');
-        $eventName = $input->getArgument('event');
+        $name = $input->getArgument('name');
+        $event = $input->getArgument('event');
 
-        $this->eventGenerator->generateEventSubscriber($path, $eventName);
+        $eventPath = null;
+        if (false !== $position = strrpos($event, '/')) {
+            $eventPath = substr($event, 0, $position);
+            $event = substr($event, $position + 1);
+        }
+
+        $this->eventGenerator->generateEventSubscriber($path, $name, $event, $eventPath);
 
         $this->writeSuccessMessage($io);
     }

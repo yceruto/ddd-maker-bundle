@@ -8,7 +8,14 @@ This bundle assumes you are using https://github.com/yceruto/symfony-ddd-skeleto
 
 ## Maker
 
- * `bin/console make:ddd:context admin` Creates a new Kernel context skeleton.
+ * `bin/console make:ddd:context admin` Creates a new Kernel context skeleton
+ * `bin/console make:ddd:module catalog/listing` Creates a new Module skeleton
+ * `bin/console make:ddd:event catalog/listing published` Creates a new Domain Event
+ * `bin/console make:ddd:event-subscriber catalog/listing published` Creates a new Domain Event Subscriber
+ * `bin/console make:cqs:command catalog/listing publish` Creates a new Command use-case
+ * `bin/console make:cqs:query catalog/listing find` Creates a new Query use-case
+
+Note: In all case the path `catalog/listing` will be normalizer to the corresponding namespace and project structure.
 
 ## License
 

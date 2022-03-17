@@ -29,44 +29,45 @@ class CQGenerator
         $this->rootNamespace = $rootNamespace;
     }
 
-    public function generateCommand(string $relativePath, bool $withFactory): void
+    public function generateCommand(string $namespacePath, string $name, bool $withFactory): void
     {
-        $path = new Path($relativePath, $this->rootNamespace, 1);
+        $path = new Path($namespacePath, $this->rootNamespace);
+        $name = Path::normalize($name);
 
-        $this->generateApplicationCommand($path);
+        $this->generateApplicationCommand($path, $name);
 
         if ($withFactory) {
-            $this->generateApplicationCommandHandlerWithFactory($path);
-            $this->generateApplicationFactory($path);
+            $this->generateApplicationCommandHandlerWithFactory($path, $name);
+            $this->generateApplicationFactory($path, $name);
         } else {
-            $this->generateApplicationCommandHandler($path);
+            $this->generateApplicationCommandHandler($path, $name);
         }
 
         $this->generator->writeChanges();
     }
 
-    public function generateQuery(string $relativePath): void
+    public function generateQuery(string $namespacePath, string $name): void
     {
-        $path = new Path($relativePath, $this->rootNamespace, 1);
+        $path = new Path($namespacePath, $this->rootNamespace);
+        $name = Path::normalize($name);
 
-        $this->generateApplicationQuery($path);
-        $this->generateApplicationQueryHandler($path);
-        $this->generateApplicationQueryResponse($path);
+        $this->generateApplicationQuery($path, $name);
+        $this->generateApplicationQueryHandler($path, $name);
+        $this->generateApplicationQueryResponse($path, $name);
 
         $this->generator->writeChanges();
     }
 
-    private function generateApplicationCommand(Path $path): void
+    private function generateApplicationCommand(Path $path, string $name): void
     {
-        $commandShortName = $path->toShortClassNameOffset();
-        $className = $commandShortName.'Command';
+        $className = $name.'Command';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$path->normalizedOffsetValue().'/'.$className.'.php',
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Command/Command.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Application\\'.$commandShortName),
+                'namespace' => $path->toNamespace('\\Application\\'.$name),
                 'class_name' => $className,
                 'command_type' => $className,
                 'command_name' => strtolower($className),
@@ -74,60 +75,57 @@ class CQGenerator
         );
     }
 
-    private function generateApplicationCommandHandler(Path $path): void
+    private function generateApplicationCommandHandler(Path $path, string $name): void
     {
-        $commandShortName = $path->toShortClassNameOffset();
-        $className = $commandShortName.'CommandHandler';
+        $className = $name.'CommandHandler';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$path->normalizedOffsetValue().'/'.$className.'.php',
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Command/CommandHandler.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Application\\'.$commandShortName),
+                'namespace' => $path->toNamespace('\\Application\\'.$name),
                 'class_name' => $className,
-                'command_type' => $commandShortName,
-                'command_name' => strtolower($commandShortName),
+                'command_type' => $name,
+                'command_name' => strtolower($name),
             ]
         );
     }
 
-    private function generateApplicationCommandHandlerWithFactory(Path $path): void
+    private function generateApplicationCommandHandlerWithFactory(Path $path, string $name): void
     {
         $aggregateShortName = $path->toShortClassName();
-        $commandShortName = $path->toShortClassNameOffset();
-        $className = $commandShortName.'CommandHandler';
+        $className = $name.'CommandHandler';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$path->normalizedOffsetValue().'/'.$className.'.php',
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Command/CommandHandlerWithFactory.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Application\\'.$commandShortName),
+                'namespace' => $path->toNamespace('\\Application\\'.$name),
                 'class_name' => $className,
-                'command_type' => $commandShortName,
-                'command_name' => strtolower($commandShortName),
+                'command_type' => $name,
+                'command_name' => strtolower($name),
                 'aggregate_type' => $aggregateShortName,
                 'aggregate_name' => strtolower($aggregateShortName),
             ]
         );
     }
 
-    private function generateApplicationFactory(Path $path): void
+    private function generateApplicationFactory(Path $path, string $name): void
     {
         $aggregateShortName = $path->toShortClassName();
         $className = $aggregateShortName.'Factory';
-        $commandShortName = $path->toShortClassNameOffset();
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$path->normalizedOffsetValue().'/'.$className.'.php',
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Command/Factory.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Application\\'.$commandShortName),
+                'namespace' => $path->toNamespace('\\Application\\'.$name),
                 'class_name' => $className,
-                'command_type' => $commandShortName,
-                'command_name' => strtolower($commandShortName),
+                'command_type' => $name,
+                'command_name' => strtolower($name),
                 'aggregate_namespace' => $path->toNamespace('\\Domain\\Model'),
                 'aggregate_type' => $aggregateShortName,
                 'aggregate_name' => strtolower($aggregateShortName),
@@ -135,17 +133,16 @@ class CQGenerator
         );
     }
 
-    private function generateApplicationQuery(Path $path): void
+    private function generateApplicationQuery(Path $path, string $name): void
     {
-        $queryShortName = $path->toShortClassNameOffset();
-        $className = $queryShortName.'Query';
+        $className = $name.'Query';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$path->normalizedOffsetValue().'/'.$className.'.php',
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Query/Query.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Application\\'.$queryShortName),
+                'namespace' => $path->toNamespace('\\Application\\'.$name),
                 'class_name' => $className,
                 'query_type' => $className,
                 'query_name' => strtolower($className),
@@ -153,36 +150,34 @@ class CQGenerator
         );
     }
 
-    private function generateApplicationQueryHandler(Path $path): void
+    private function generateApplicationQueryHandler(Path $path, string $name): void
     {
-        $queryShortName = $path->toShortClassNameOffset();
-        $className = $queryShortName.'QueryHandler';
+        $className = $name.'QueryHandler';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$path->normalizedOffsetValue().'/'.$className.'.php',
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Query/QueryHandler.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Application\\'.$queryShortName),
+                'namespace' => $path->toNamespace('\\Application\\'.$name),
                 'class_name' => $className,
-                'query_type' => $queryShortName,
-                'query_name' => strtolower($queryShortName),
+                'query_type' => $name,
+                'query_name' => strtolower($name),
             ]
         );
     }
 
-    private function generateApplicationQueryResponse(Path $path): void
+    private function generateApplicationQueryResponse(Path $path, string $name): void
     {
         $aggregateShortName = $path->toShortClassName();
-        $queryShortName = $path->toShortClassNameOffset();
-        $className = $queryShortName.'Response';
+        $className = $name.'Response';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$path->normalizedOffsetValue().'/'.$className.'.php',
+            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Query/Response.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Application\\'.$queryShortName),
+                'namespace' => $path->toNamespace('\\Application\\'.$name),
                 'class_name' => $className,
                 'aggregate_namespace' => $path->toNamespace('\\Domain\\Model'),
                 'aggregate_type' => $aggregateShortName,

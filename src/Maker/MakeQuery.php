@@ -43,7 +43,8 @@ final class MakeQuery extends AbstractMaker
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
-            ->addArgument('path', InputArgument::REQUIRED, 'The relative path of the new Query (e.g. <fg=yellow>catalog/listing/find</>)')
+            ->addArgument('path', InputArgument::REQUIRED, 'The namespace path of the new Query (e.g. <fg=yellow>catalog/listing</>)')
+            ->addArgument('name', InputArgument::REQUIRED, 'The Query name (e.g. <fg=yellow>find</>)')
             //->setHelp(file_get_contents(__DIR__.'/../help/MakeCommand.txt'))
         ;
     }
@@ -52,8 +53,9 @@ final class MakeQuery extends AbstractMaker
     {
         $io->title('Creating new Query');
         $path = $input->getArgument('path');
+        $name = $input->getArgument('name');
 
-        $this->commandGenerator->generateQuery($path);
+        $this->commandGenerator->generateQuery($path, $name);
 
         $this->writeSuccessMessage($io);
     }
