@@ -9,10 +9,10 @@ class <?= $class_name."\n"; ?>
     public string $id;
 
     /**
-    * @param array<<?= $entity_type; ?>> $collection
-    *
-    * @return array<int, static>
-    */
+     * @param array<<?= $entity_type; ?>> $collection
+     *
+     * @return array<int, static>
+     */
     public static function createCollection(array $collection): array
     {
         return array_map([static::class, 'create'], $collection);

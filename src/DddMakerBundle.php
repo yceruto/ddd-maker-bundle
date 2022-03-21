@@ -23,6 +23,7 @@ class DddMakerBundle extends MicroBundle
         $definition->rootNode()
             ->children()
                 ->scalarNode('skeleton_dir')->defaultValue(dirname(__DIR__).'/config/skeleton')->end()
+                ->scalarNode('root_dir')->defaultValue('src')->end()
                 ->scalarNode('root_namespace')->defaultValue('App')->end()
             ->end()
         ;
@@ -32,6 +33,7 @@ class DddMakerBundle extends MicroBundle
     {
         $container->parameters()
             ->set('ddd_maker.skeleton_dir', $config['skeleton_dir'])
+            ->set('ddd_maker.root_dir', $config['root_dir'])
             ->set('ddd_maker.root_namespace', $config['root_namespace'])
         ;
 

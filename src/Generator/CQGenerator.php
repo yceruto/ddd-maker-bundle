@@ -12,27 +12,26 @@
 namespace Yceruto\DddMakerBundle\Generator;
 
 use Symfony\Bundle\MakerBundle\Generator;
-use Yceruto\DddMakerBundle\Path;
 
 class CQGenerator
 {
     private Generator $generator;
-    private string $projectDir;
+    private string $rootDir;
     private string $skeletonDir;
     private string $rootNamespace;
 
-    public function __construct(Generator $generator, string $projectDir, string $skeletonDir, string $rootNamespace)
+    public function __construct(Generator $generator, string $rootDir, string $skeletonDir, string $rootNamespace)
     {
         $this->generator = $generator;
-        $this->projectDir = $projectDir;
+        $this->rootDir = $rootDir;
         $this->skeletonDir = $skeletonDir;
         $this->rootNamespace = $rootNamespace;
     }
 
     public function generateCommand(string $namespacePath, string $name, bool $withFactory): void
     {
-        $path = new Path($namespacePath, $this->rootNamespace);
-        $name = Path::normalize($name);
+        $path = new NamespacePath($namespacePath, $this->rootNamespace);
+        $name = NamespacePath::normalize($name);
 
         $this->generateApplicationCommand($path, $name);
 
@@ -48,8 +47,8 @@ class CQGenerator
 
     public function generateQuery(string $namespacePath, string $name): void
     {
-        $path = new Path($namespacePath, $this->rootNamespace);
-        $name = Path::normalize($name);
+        $path = new NamespacePath($namespacePath, $this->rootNamespace);
+        $name = NamespacePath::normalize($name);
 
         $this->generateApplicationQuery($path, $name);
         $this->generateApplicationQueryHandler($path, $name);
@@ -58,12 +57,12 @@ class CQGenerator
         $this->generator->writeChanges();
     }
 
-    private function generateApplicationCommand(Path $path, string $name): void
+    private function generateApplicationCommand(NamespacePath $path, string $name): void
     {
         $className = $name.'Command';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
+            $this->rootDir.'/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Command/Command.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
@@ -75,12 +74,12 @@ class CQGenerator
         );
     }
 
-    private function generateApplicationCommandHandler(Path $path, string $name): void
+    private function generateApplicationCommandHandler(NamespacePath $path, string $name): void
     {
         $className = $name.'CommandHandler';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
+            $this->rootDir.'/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Command/CommandHandler.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
@@ -92,13 +91,13 @@ class CQGenerator
         );
     }
 
-    private function generateApplicationCommandHandlerWithFactory(Path $path, string $name): void
+    private function generateApplicationCommandHandlerWithFactory(NamespacePath $path, string $name): void
     {
         $aggregateShortName = $path->toShortClassName();
         $className = $name.'CommandHandler';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
+            $this->rootDir.'/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Command/CommandHandlerWithFactory.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
@@ -112,13 +111,13 @@ class CQGenerator
         );
     }
 
-    private function generateApplicationFactory(Path $path, string $name): void
+    private function generateApplicationFactory(NamespacePath $path, string $name): void
     {
         $aggregateShortName = $path->toShortClassName();
         $className = $aggregateShortName.'Factory';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
+            $this->rootDir.'/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Command/Factory.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
@@ -133,12 +132,12 @@ class CQGenerator
         );
     }
 
-    private function generateApplicationQuery(Path $path, string $name): void
+    private function generateApplicationQuery(NamespacePath $path, string $name): void
     {
         $className = $name.'Query';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
+            $this->rootDir.'/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Query/Query.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
@@ -150,12 +149,12 @@ class CQGenerator
         );
     }
 
-    private function generateApplicationQueryHandler(Path $path, string $name): void
+    private function generateApplicationQueryHandler(NamespacePath $path, string $name): void
     {
         $className = $name.'QueryHandler';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
+            $this->rootDir.'/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Query/QueryHandler.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
@@ -167,13 +166,13 @@ class CQGenerator
         );
     }
 
-    private function generateApplicationQueryResponse(Path $path, string $name): void
+    private function generateApplicationQueryResponse(NamespacePath $path, string $name): void
     {
         $aggregateShortName = $path->toShortClassName();
         $className = $name.'Response';
 
         $this->generator->generateFile(
-            $this->projectDir.'/src/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
+            $this->rootDir.'/'.$path->normalizedValue().'/Application/'.$name.'/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Application/Query/Response.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,

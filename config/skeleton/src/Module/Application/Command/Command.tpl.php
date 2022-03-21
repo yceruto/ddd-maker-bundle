@@ -7,8 +7,8 @@ namespace <?= $namespace; ?>;
 use <?= $root_namespace; ?>\Shared\Domain\Bus\Command\Command;
 
 /**
-* @psalm-immutable
-*/
+ * @psalm-immutable
+ */
 class <?= $class_name; ?> implements Command
 {
     private string $id;

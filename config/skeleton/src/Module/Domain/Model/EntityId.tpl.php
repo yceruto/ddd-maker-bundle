@@ -7,8 +7,8 @@ namespace <?= $namespace; ?>;
 use <?= $root_namespace; ?>\Shared\Domain\ValueObject\Uuid;
 
 /**
-* @psalm-immutable
-*/
+ * @psalm-immutable
+ */
 class <?= $class_name; ?> extends Uuid
 {
 }

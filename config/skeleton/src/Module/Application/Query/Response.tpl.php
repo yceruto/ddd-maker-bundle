@@ -8,8 +8,8 @@ use <?= $root_namespace; ?>\Shared\Domain\Bus\Query\Response;
 use <?= $aggregate_namespace; ?>\<?= $aggregate_type; ?>Dto;
 
 /**
-* @psalm-immutable
-*/
+ * @psalm-immutable
+ */
 class <?= $class_name; ?> implements Response
 {
     private <?= $aggregate_type; ?>Dto $<?= $aggregate_name; ?>;

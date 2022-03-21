@@ -16,8 +16,8 @@ class <?= $class_name; ?> implements InMemory<?= $entity_type; ?>Specification
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function query(array $collection): array
     {
         return array_slice($collection, $this->offset, $this->limit);

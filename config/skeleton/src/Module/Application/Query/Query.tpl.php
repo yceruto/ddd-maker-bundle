@@ -7,8 +7,8 @@ namespace <?= $namespace; ?>;
 use <?= $root_namespace; ?>\Shared\Domain\Bus\Query\Query;
 
 /**
-* @psalm-immutable
-*/
+ * @psalm-immutable
+ */
 class <?= $class_name; ?> implements Query
 {
     private string $id;

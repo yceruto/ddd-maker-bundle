@@ -15,7 +15,8 @@ This bundle assumes you are using https://github.com/yceruto/symfony-ddd-skeleto
  * `bin/console make:cqs:command catalog/listing publish` Creates a new Command use-case
  * `bin/console make:cqs:query catalog/listing find` Creates a new Query use-case
 
-Note: In all case the path `catalog/listing` will be normalizer to the corresponding namespace and project structure.
+Note: In all cases the namespace path (e.g. `catalog/listing`) will be normalized to the corresponding PHP namespace and 
+directory structure convention following the DDD approach.
 
 ## License
 

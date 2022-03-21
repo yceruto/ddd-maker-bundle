@@ -10,9 +10,9 @@ use <?= $entity_class; ?>Specification;
 interface <?= $class_name; ?> extends <?= $entity_type; ?>Specification
 {
     /**
-    * @param array<<?= $entity_type; ?>> $collection
-    *
-    * @return array<<?= $entity_type; ?>>
-    */
+     * @param array<<?= $entity_type; ?>> $collection
+     *
+     * @return array<<?= $entity_type; ?>>
+     */
     public function query(array $collection): array;
 }

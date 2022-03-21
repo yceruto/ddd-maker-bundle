@@ -19,13 +19,16 @@ use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Yceruto\DddMakerBundle\Generator\DddContextGenerator;
 
 final class MakeContext extends AbstractMaker
 {
+    private DddContextGenerator $contextGenerator;
     private string $projectDir;
 
-    public function __construct(string $projectDir)
+    public function __construct(DddContextGenerator $contextGenerator, string $projectDir)
     {
+        $this->contextGenerator = $contextGenerator;
         $this->projectDir = $projectDir;
     }
 
@@ -51,38 +54,9 @@ final class MakeContext extends AbstractMaker
     {
         $context = ucfirst($input->getArgument('context'));
         $contextLower = strtolower($context);
-        $skeletonDir = dirname(__DIR__, 2).'/config/skeleton';
+
         $io->title('Creating new Kernel context (Application)');
-
-        $generator->generateFile(
-            $this->projectDir.'/context/'.$contextLower.'/config/bundles.php',
-            $skeletonDir.'/context/config/bundles.tpl.php'
-        );
-
-        $generator->generateFile(
-            $this->projectDir.'/context/'.$contextLower.'/config/routes.yaml',
-            $skeletonDir.'/context/config/routes.tpl.php',
-            ['context' => $context]
-        );
-
-        $generator->generateFile(
-            $this->projectDir.'/context/'.$contextLower.'/config/services.yaml',
-            $skeletonDir.'/context/config/services.tpl.php',
-            ['context' => $context]
-        );
-
-        $generator->generateFile(
-            $this->projectDir.'/context/'.$contextLower.'/src/Controller/.gitignore',
-            $skeletonDir.'/.gitignore'
-        );
-
-        $generator->generateFile(
-            $this->projectDir.'/tests/context/'.$contextLower.'/'.$context.'WebTestCase.php',
-            $skeletonDir.'/context/tests/WebTestCase.tpl.php',
-            ['context' => $context, 'contextLower' => $contextLower]
-        );
-
-        $generator->writeChanges();
+        $this->contextGenerator->generateContext($context);
 
         if (is_file($this->projectDir.'/composer.json') && is_readable($this->projectDir.'/composer.json')) {
             $composerJson = json_decode(file_get_contents($this->projectDir.'/composer.json'), true);

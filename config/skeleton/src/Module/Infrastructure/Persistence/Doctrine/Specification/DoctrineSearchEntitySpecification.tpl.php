@@ -19,8 +19,8 @@ class <?= $class_name; ?> implements Doctrine<?= $entity_type; ?>Specification
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function query(QueryBuilder $qb): iterable
     {
         return $qb->select('o')

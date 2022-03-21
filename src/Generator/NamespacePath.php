@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Yceruto\DddMakerBundle;
+namespace Yceruto\DddMakerBundle\Generator;
 
-final class Path
+final class NamespacePath
 {
     private string $relativePath;
     private string $rootNamespace;

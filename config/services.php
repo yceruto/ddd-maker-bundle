@@ -12,6 +12,7 @@ return static function (ContainerConfigurator $configurator) {
             ->bind('string $projectDir', param('kernel.project_dir'))
             ->bind('string $skeletonDir', param('ddd_maker.skeleton_dir'))
             ->bind('string $rootNamespace', param('ddd_maker.root_namespace'))
+            ->bind('string $rootDir', param('kernel.project_dir').'/'.param('ddd_maker.root_dir'))
 
         ->load('Yceruto\\DddMakerBundle\\', '../src/*')
 

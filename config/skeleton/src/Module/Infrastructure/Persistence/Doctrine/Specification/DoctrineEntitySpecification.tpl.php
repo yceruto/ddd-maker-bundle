@@ -11,7 +11,7 @@ use <?= $entity_class; ?>Specification;
 interface <?= $class_name; ?> extends <?= $entity_type; ?>Specification
 {
     /**
-    * @return iterable<<?= $entity_type; ?>>
-    */
+     * @return iterable<<?= $entity_type; ?>>
+     */
     public function query(QueryBuilder $qb): iterable;
 }
