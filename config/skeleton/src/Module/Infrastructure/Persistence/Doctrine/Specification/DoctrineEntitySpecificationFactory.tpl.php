@@ -11,6 +11,6 @@ class <?= $class_name; ?> implements <?= $entity_type; ?>SpecificationFactory
 {
     public function createSearch(int $offset, int $limit): <?= $entity_type; ?>Specification
     {
-        return new DoctrineSearch<?= $entity_type; ?>Specification($offset, $limit);
+        return new Doctrine<?= $spec_name; ?><?= $entity_type; ?>Specification($offset, $limit);
     }
 }

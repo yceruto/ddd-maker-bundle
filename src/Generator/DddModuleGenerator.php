@@ -16,13 +16,20 @@ use Symfony\Bundle\MakerBundle\Generator;
 class DddModuleGenerator
 {
     private Generator $generator;
+    private DddQuerySpecificationGenerator $querySpecGenerator;
     private string $rootDir;
     private string $skeletonDir;
     private string $rootNamespace;
 
-    public function __construct(Generator $generator, string $rootDir, string $skeletonDir, string $rootNamespace)
-    {
+    public function __construct(
+        Generator $generator,
+        DddQuerySpecificationGenerator $querySpecGenerator,
+        string $rootDir,
+        string $skeletonDir,
+        string $rootNamespace
+    ) {
         $this->generator = $generator;
+        $this->querySpecGenerator = $querySpecGenerator;
         $this->rootDir = $rootDir;
         $this->skeletonDir = $skeletonDir;
         $this->rootNamespace = $rootNamespace;
@@ -67,17 +74,13 @@ class DddModuleGenerator
         $this->generateDomainEntityEvent($path);
         $this->generateDomainEntityNotFound($path);
         $this->generateDomainEntityRepository($path);
-        if ($withSpec) {
-            $this->generateDomainEntitySpecification($path);
-            $this->generateDomainEntitySpecificationFactory($path);
-        }
 
         // Infrastructure
         $this->generateInfraDoctrineDbalEntityIdType($path);
         $this->generateInfraEntityRepository($path);
+
         if ($withSpec) {
-            $this->generateInfraEntitySpecification($path);
-            $this->generateInfraEntitySpecificationFactory($path);
+            $this->querySpecGenerator->generateQuerySpecification($namespacePath);
         }
 
         $this->generator->writeChanges();
@@ -181,48 +184,13 @@ class DddModuleGenerator
         );
     }
 
-    private function generateDomainEntitySpecification(NamespacePath $path): void
-    {
-        $entityShortName = $path->toShortClassName();
-        $className = $entityShortName.'Specification';
-
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Domain/Model/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Domain/Model/EntitySpecification.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Domain\\Model'),
-                'class_name' => $className,
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-    }
-
-    private function generateDomainEntitySpecificationFactory(NamespacePath $path): void
-    {
-        $entityShortName = $path->toShortClassName();
-        $className = $entityShortName.'SpecificationFactory';
-
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Domain/Model/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Domain/Model/EntitySpecificationFactory.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Domain\\Model'),
-                'class_name' => $className,
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-    }
-
     private function generateInfraDoctrineDbalEntityIdType(NamespacePath $path): void
     {
         $entityShortName = $path->toShortClassName();
         $className = $entityShortName.'IdType';
         $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Infrastructure/Persistence/Doctrine/Dbal/Type/'.$className.'.php',
+            $this->rootDir.'/'.$path->normalizedValue(
+            ).'/Infrastructure/Persistence/Doctrine/Dbal/Type/'.$className.'.php',
             $this->skeletonDir.'/src/Module/Infrastructure/Persistence/Doctrine/Dbal/Type/EntityIdType.tpl.php',
             [
                 'root_namespace' => $this->rootNamespace,
@@ -260,128 +228,6 @@ class DddModuleGenerator
             [
                 'root_namespace' => $this->rootNamespace,
                 'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\InMemory'),
-                'class_name' => $className,
-                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-    }
-
-    private function generateInfraEntitySpecification(NamespacePath $path): void
-    {
-        $entityShortName = $path->toShortClassName();
-
-        $className = 'Doctrine'.$entityShortName.'Specification';
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Infrastructure/Persistence/Doctrine/Specification/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/Doctrine/Specification/DoctrineEntitySpecification.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\Doctrine\\Specification'),
-                'class_name' => $className,
-                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-
-        $className = 'DoctrineSearch'.$entityShortName.'Specification';
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Infrastructure/Persistence/Doctrine/Specification/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/Doctrine/Specification/DoctrineSearchEntitySpecification.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\Doctrine\\Specification'),
-                'class_name' => $className,
-                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-
-        $className = 'InMemory'.$entityShortName.'Specification';
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Infrastructure/Persistence/InMemory/Specification/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/InMemory/Specification/InMemoryEntitySpecification.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\InMemory\\Specification'),
-                'class_name' => $className,
-                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-
-        $className = 'InMemorySearch'.$entityShortName.'Specification';
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Infrastructure/Persistence/InMemory/Specification/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/InMemory/Specification/InMemorySearchEntitySpecification.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\InMemory\\Specification'),
-                'class_name' => $className,
-                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-    }
-
-    private function generateInfraEntitySpecificationFactory(NamespacePath $path): void
-    {
-        $entityShortName = $path->toShortClassName();
-
-        $className = 'Doctrine'.$entityShortName.'Specification';
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Infrastructure/Persistence/Doctrine/Specification/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/Doctrine/Specification/DoctrineEntitySpecification.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\Doctrine\\Specification'),
-                'class_name' => $className,
-                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-
-        $className = 'Doctrine'.$entityShortName.'SpecificationFactory';
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Infrastructure/Persistence/Doctrine/Specification/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/Doctrine/Specification/DoctrineEntitySpecificationFactory.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\Doctrine\\Specification'),
-                'class_name' => $className,
-                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-
-        $className = 'InMemory'.$entityShortName.'Specification';
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Infrastructure/Persistence/InMemory/Specification/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/InMemory/Specification/InMemoryEntitySpecification.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\InMemory\\Specification'),
-                'class_name' => $className,
-                'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
-                'entity_type' => $entityShortName,
-                'entity_name' => strtolower($entityShortName),
-            ]
-        );
-
-        $className = 'InMemory'.$entityShortName.'SpecificationFactory';
-        $this->generator->generateFile(
-            $this->rootDir.'/'.$path->normalizedValue().'/Infrastructure/Persistence/InMemory/Specification/'.$className.'.php',
-            $this->skeletonDir.'/src/Module/Infrastructure/Persistence/InMemory/Specification/InMemoryEntitySpecificationFactory.tpl.php',
-            [
-                'root_namespace' => $this->rootNamespace,
-                'namespace' => $path->toNamespace('\\Infrastructure\\Persistence\\InMemory\\Specification'),
                 'class_name' => $className,
                 'entity_class' => $path->toNamespace('\\Domain\\Model\\'.$entityShortName),
                 'entity_type' => $entityShortName,
