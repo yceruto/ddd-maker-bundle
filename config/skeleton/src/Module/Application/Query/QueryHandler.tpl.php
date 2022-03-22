@@ -8,7 +8,7 @@ use <?= $root_namespace; ?>\Shared\Domain\Bus\Query\QueryHandler;
 
 class <?= $class_name; ?> implements QueryHandler
 {
-    public function __invoke(<?= $query_type; ?>Query $query): void
+    public function __invoke(<?= $query_type; ?>Query $query): <?= $query_type; ?>Response
     {
         // ...
     }
