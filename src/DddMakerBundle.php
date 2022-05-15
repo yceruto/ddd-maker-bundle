@@ -12,11 +12,11 @@
 namespace Yceruto\DddMakerBundle;
 
 use MicroSymfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
-use MicroSymfony\Component\HttpKernel\Bundle\MicroBundle;
+use MicroSymfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-class DddMakerBundle extends MicroBundle
+class DddMakerBundle extends AbstractBundle
 {
     public function configuration(DefinitionConfigurator $definition): void
     {
