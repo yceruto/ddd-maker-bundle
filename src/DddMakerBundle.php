@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 class DddMakerBundle extends AbstractBundle
 {
-    public function configuration(DefinitionConfigurator $definition): void
+    public function configure(DefinitionConfigurator $definition): void
     {
         $definition->rootNode()
             ->children()
