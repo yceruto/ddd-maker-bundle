@@ -14,8 +14,8 @@
   "require": {
     "php": ">=7.4",
     "ext-json": "*",
-    "symfony/console": "^5.4|^6.0",
-    "symfony/framework-bundle": "^5.4|^6.0",
+    "symfony/console": "^5.4|^6.0|^7.0",
+    "symfony/framework-bundle": "^5.4|^6.0|^7.0",
     "symfony/maker-bundle": "^1.36",
     "yceruto/micro-symfony": "^1.2"
   },
